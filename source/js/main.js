@@ -60,7 +60,7 @@ function decodeInfo(info) {
 		var data = JSON.parse(members)
 		var team_members = []
 		for (var member in data.team_members) {
-			team_members.push(member.player)
+			team_members.push(JSON.parse(member).player)
 		}
 		endpoint = 'team_members'
 		value = JSON.stringify(team_members)
