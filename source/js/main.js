@@ -77,9 +77,10 @@ function decodeInfo(info) {
 		var teams = info.match_info.total_teams
 		var total = info.match_info.total
 		var me = info.match_info.me
-		if (teams) {
+		if (teams > 0) {
 			endpoint = 'total_teams'
 			value = teams
+			console.log('Total teams: '+value)
 		}
 		if (total) {
 			endpoint = 'total_players'
@@ -166,7 +167,7 @@ function hasGameLaunched(info) {
 
 function sendToDiscord(endpoint, data) {
 	console.log(`Sending ${data} to ${endpoint}`)
-	$.post(`http://localhost:8090/pubg/${name}/${endpoint}/${data}`, {}, (ret) => {
+	$.get(`http://66.70.190.195:8090/pubg/${name}/${endpoint}/${data}`, {}, (ret) => {
 		var data = getJSON(ret)
 		if (data == null) {
 			console.log(data.error)
@@ -174,6 +175,20 @@ function sendToDiscord(endpoint, data) {
 		}
 		console.log('Successfully sent data to discord server!')
 	})
+}
+
+function getJSON(ret) {
+	var data = JSON.parse(ret);
+	if (data.success == null) {
+		console.log('Invalid response.');
+		return null;
+	}
+	if (!data.success) {
+		if(data.error !== '')
+			console.log(data.error);
+		return null;
+	}
+	return data;
 }
 
 sendToDiscord('running', 'true')
